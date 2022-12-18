@@ -14,7 +14,7 @@ SCOPES = [
 ]
 
 
-def upload_to_youtube(filepath):
+def upload_to_youtube(filepath, **kwargs):
     api_service_name = "youtube"
     api_version = "v3"
     config = get_config()
@@ -23,12 +23,16 @@ def upload_to_youtube(filepath):
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, credentials=credentials
     )
+    snippet = kwargs.copy()
+    if "title" not in snippet:
+        snippet["title"] = "New Video"
+
+    snippet.update(
+        tags=["islamic"],
+        categoryId="22",
+    )
     body = dict(
-        snippet=dict(
-            title="First video from ptb",
-            tags=["islamic"],
-            categoryId="22",
-        ),
+        snippet=snippet,
         status=dict(privacyStatus="public", selfDeclaredMadeForKids=True),
     )
     request = youtube.videos().insert(

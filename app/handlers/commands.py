@@ -1,6 +1,11 @@
 import os
+import logging
+
 from telegram.ext import CommandHandler, Filters
+
 from app.config import Settings
+
+logger = logging.getLogger(__name__)
 
 
 def start(update, context):
@@ -24,7 +29,10 @@ def get_start_handler(config):
 
 
 def get_clean_handler(config: Settings):
-    allowed_usernames = [ue[0] for ue in config.allowed_users]
     return CommandHandler(
-        "clean", clean, filters=Filters.chat(username=allowed_usernames)
+        "clean",
+        clean,
+        filters=Filters.chat(
+            username=[username for username, _ in config.allowed_users]
+        ),
     )

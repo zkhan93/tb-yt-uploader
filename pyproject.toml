@@ -21,9 +21,9 @@ itsdangerous = "^2.1.2"
 cryptography = "^38.0.4"
 python-dotenv = "^0.21.0"
 
-
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"
+jurigged = "^0.5.3"
 
 [build-system]
 requires = ["poetry-core"]
