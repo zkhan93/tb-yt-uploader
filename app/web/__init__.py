@@ -6,7 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
-import whisper
+# import whisper
 
 from app.config import get_config
 from app.utils.cred import get_cred, save_cred
@@ -28,9 +28,9 @@ app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
 
 @app.get("/audio2text/{filename}")
 async def test_audio(filename):
-    model = whisper.load_model("base")
-    result = model.transcribe(f"./data/audios/{filename}.ogg")
-    return result
+    # model = whisper.load_model("base")
+    # result = model.transcribe(f"./data/audios/{filename}.ogg")
+    return "not implemented"
 
 
 @app.get("/test")
