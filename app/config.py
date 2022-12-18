@@ -30,5 +30,4 @@ class Settings(BaseSettings):
 @lru_cache
 def get_config():
     config = Settings()
-    logger.info(config.dict())
     return config
