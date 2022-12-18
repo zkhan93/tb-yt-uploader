@@ -1,4 +1,5 @@
 import logging
+import os
 
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse
@@ -61,6 +62,10 @@ async def oauth_callback(request: Request):
     )
     flow.redirect_uri = config.oauth_redirect_uri
     authorization_response = str(request.url)
+    if os.getenv("OAUTHLIB_INSECURE_TRANSPORT", None) != "1":
+        logger.info(authorization_response)
+        authorization_response = authorization_response.replace("http:", "https:")
+        logger.info(authorization_response)
     flow.fetch_token(authorization_response=authorization_response)
 
     credentials = flow.credentials
