@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+
+  ptb:
+    image: zkhan93/tb-yt-uploader
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: scripts/start-bot.sh
+    volumes:
+      - media-data:/data
+  
+  web:
+    image: zkhan93/tb-yt-uploader
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: scripts/start-web.sh
+    ports:
+      - 8080:80
+    volumes:
+      - media-data:/data:ro
+  
+  redis:
+    image: redis
+    volumes:
+        - redis_data:/data
+
+volumes:
+  redis_data:
+  media-data:

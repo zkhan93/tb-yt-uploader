@@ -1,0 +1,30 @@
+name: Deploy On Production
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@v1
+      env:
+        RELEASE_BRANCHES: main
+  deploy:
+    needs: tag
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: zkhan93/tb-yt-uploader
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: ghcr.io
+        tag_semver: true
+
