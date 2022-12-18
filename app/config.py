@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class Settings(BaseSettings):
     media_base: str
     token: str
-    allowed_users: str
+    allowed_users: list[tuple]
     client_secret_json: dict
     oauth_redirect_uri: str
     secret_key: str
@@ -18,7 +18,6 @@ class Settings(BaseSettings):
     youtube_email: str
 
     class Config:
-        env_file = '.env'
         
         @classmethod
         def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
