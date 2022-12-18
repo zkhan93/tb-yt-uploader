@@ -6,38 +6,22 @@ from starlette.middleware.sessions import SessionMiddleware
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
-# import whisper
 
 from app.config import get_config
-from app.utils.cred import get_cred, save_cred
+from app.utils.cred import get_cred, save_cred, SCOPES
 
 logger = logging.getLogger(__name__)
 
-
-SCOPES = [
-    "https://www.googleapis.com/auth/youtube.upload",
-    "https://www.googleapis.com/auth/userinfo.email",
-    "https://www.googleapis.com/auth/userinfo.profile",
-    "openid",
-]
 
 config = get_config()
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
 
 
-@app.get("/audio2text/{filename}")
-async def test_audio(filename):
-    # model = whisper.load_model("base")
-    # result = model.transcribe(f"./data/audios/{filename}.ogg")
-    return "not implemented"
-
-
 @app.get("/test")
 async def test(request: Request):
-    email = "shaheenkaimuri@gmail.com"
     try:
-        credentials = get_cred(email)
+        credentials = get_cred(config.youtube_email)
     except Exception as ex:
         logger.exception(ex)
         return RedirectResponse("/authorize")
@@ -48,7 +32,7 @@ async def test(request: Request):
     service = googleapiclient.discovery.build("oauth2", "v2", credentials=credentials)
     user_info = service.userinfo().get().execute()
 
-    save_cred(email, credentials)
+    save_cred(config.youtube_email, credentials)
 
     return user_info
 

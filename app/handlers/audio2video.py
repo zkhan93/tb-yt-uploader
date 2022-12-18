@@ -9,7 +9,6 @@ from telegram.ext import MessageHandler, Filters
 from app.config import get_config
 from app.utils.yt_uploader import upload_to_youtube
 from app.utils.a2v import create_video_file
-import whisper
 
 logger = logging.getLogger(__name__)
 
@@ -52,14 +51,7 @@ def audio2video(update: Update, context: CCT):
         caption="video created, uploading to youtube..",
     )
     try:
-        model = whisper.load_model("base")
-        result = model.transcribe(audio_file_path)
-    except Exception as ex:
-        description = ""
-    else:
-        description = result["text"]
-    try:
-        upload_to_youtube(video_path, description)
+        upload_to_youtube(video_path)
     except Exception as ex:
         logger.exception("Error while uploading to youtube")
         context.bot.send_message(
@@ -72,8 +64,10 @@ def audio2video(update: Update, context: CCT):
             text="uploading complete",
         )
 
+
 def get_handler(config):
     return MessageHandler(
-        Filters.voice | Filters.audio,
+        (Filters.voice | Filters.audio)
+        & Filters.chat(username=[username for username, _ in config.allowed_users]),
         audio2video,
     )

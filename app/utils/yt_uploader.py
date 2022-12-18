@@ -14,24 +14,18 @@ SCOPES = [
 ]
 
 
-def upload_to_youtube(filepath, description):
+def upload_to_youtube(filepath):
     api_service_name = "youtube"
     api_version = "v3"
     config = get_config()
-    email = "shaheenkaimuri@gmail.com"
-    credentials = get_cred(email)
-    print(credentials)
+    credentials = get_cred(config.youtube_email)
     credentials = google.oauth2.credentials.Credentials(**credentials)
-    service = googleapiclient.discovery.build("oauth2", "v2", credentials=credentials)
-    user_info = service.userinfo().get().execute()
-    print(user_info)
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, credentials=credentials
     )
     body = dict(
         snippet=dict(
             title="First video from ptb",
-            description=description,
             tags=["islamic"],
             categoryId="22",
         ),
@@ -41,8 +35,8 @@ def upload_to_youtube(filepath, description):
         part=",".join(body.keys()), body=body, media_body=MediaFileUpload(filepath)
     )
     response = request.execute()
-    save_cred(email, credentials)
-    print(response)
+    save_cred(config.youtube_email, credentials)
+    return response
 
     # response = None
     # def upload_next_chunk(request):

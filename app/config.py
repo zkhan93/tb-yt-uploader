@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     oauth_redirect_uri: str
     secret_key: str
     redis_host: str
+    youtube_email: str
 
     class Config:
         env_file = '.env'

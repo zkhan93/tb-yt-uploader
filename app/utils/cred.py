@@ -5,6 +5,13 @@ import redis
 import json
 from functools import lru_cache
 
+SCOPES = [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+]
+
 def get_fernet():
     config = get_config()
     key= base64.b64encode(config.secret_key[:32].encode('utf-8'))
