@@ -57,7 +57,7 @@ def save_cred(email, cred):
 
 
 @contextmanager
-def get_credential(email):
+def get_credentials(email):
     credential_dic = get_cred(email)
     credentials = google.oauth2.credentials.Credentials(**credential_dic)
     try:
