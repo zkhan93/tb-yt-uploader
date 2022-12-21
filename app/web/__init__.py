@@ -8,7 +8,7 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
 from app.config import get_config
-from app.utils.cred import get_credential, SCOPES, save_cred
+from app.utils.cred import get_credentials, SCOPES, save_cred
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
 @app.get("/test")
 async def test(request: Request):
     try:
-        with get_credential(config.youtube_email) as credentials:
+        with get_credentials(config.youtube_email) as credentials:
             # Load credentials from the session.
             service = googleapiclient.discovery.build(
                 "oauth2", "v2", credentials=credentials
