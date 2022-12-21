@@ -6,6 +6,9 @@ import ffmpeg
 
 logger = logging.getLogger(__name__)
 
+def delete_file(path):
+    if os.path.exists(path):
+        os.remove(path)
 
 def download_audio(config, msg):
     AUDIO_BASE = os.path.join(config.media_base, "audios")

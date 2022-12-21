@@ -5,7 +5,7 @@ from telegram.ext import CommandHandler, Filters
 from telegram import ParseMode
 
 from app.config import get_config
-from app.utils.a2v import create_video_file, download_audio
+from app.utils.a2v import create_video_file, download_audio, delete_file
 from app.utils.yt_uploader import upload_to_youtube
 
 logger = logging.getLogger(__name__)
@@ -23,6 +23,7 @@ def convert(update, context):
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f"error fetching audio: ```\n{str(ex)}\n```",
+            parse_mode=ParseMode.MARKDOWN_V2,
         )
     else:
         IMAGE_PATH = os.path.join(config.media_base, "images", "img.jpg")
@@ -34,7 +35,9 @@ def convert(update, context):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text=f"error creating video: ```\n{str(ex)}\n```",
+                parse_mode=ParseMode.MARKDOWN_V2,
             )
+            delete_file(audio_path)
         else:
             try:
                 result = upload_to_youtube(video_path, title=title)
@@ -43,6 +46,7 @@ def convert(update, context):
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text=f"error uploading video: ```\n{str(ex)}\n```",
+                    parse_mode=ParseMode.MARKDOWN_V2,
                 )
             else:
                 context.bot.send_video(
@@ -51,6 +55,9 @@ def convert(update, context):
                     caption=f"uploaded: ```\n{result}\n```",
                     parse_mode=ParseMode.MARKDOWN_V2,
                 )
+            finally:
+                delete_file(audio_path)
+                delete_file(video_path)
 
 
 def get_convert_handler(config):

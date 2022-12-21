@@ -1,15 +1,14 @@
 import logging
 import os
 
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
-import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
 from app.config import get_config
-from app.utils.cred import get_cred, save_cred, SCOPES
+from app.utils.cred import get_credential, SCOPES, save_cred
 
 logger = logging.getLogger(__name__)
 
@@ -22,20 +21,17 @@ app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
 @app.get("/test")
 async def test(request: Request):
     try:
-        credentials = get_cred(config.youtube_email)
+        with get_credential(config.youtube_email) as credentials:
+            # Load credentials from the session.
+            service = googleapiclient.discovery.build(
+                "oauth2", "v2", credentials=credentials
+            )
+            user_info = service.userinfo().get().execute()
     except Exception as ex:
         logger.exception(ex)
         return RedirectResponse("/authorize")
-
-    print(credentials)
-    # Load credentials from the session.
-    credentials = google.oauth2.credentials.Credentials(**credentials)
-    service = googleapiclient.discovery.build("oauth2", "v2", credentials=credentials)
-    user_info = service.userinfo().get().execute()
-
-    save_cred(config.youtube_email, credentials)
-
-    return user_info
+    else:
+        return user_info
 
 
 @app.get("/authorize")
@@ -49,7 +45,6 @@ async def authorize(request: Request):
         access_type="offline", include_granted_scopes="true"
     )
     request.session["state"] = state
-    # this is a redirect
     return RedirectResponse(authorization_url)
 
 

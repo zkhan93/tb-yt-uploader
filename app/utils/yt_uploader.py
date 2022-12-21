@@ -2,9 +2,8 @@ import googleapiclient.discovery
 import googleapiclient.errors
 
 from googleapiclient.http import MediaFileUpload
-import google.oauth2.credentials
 from app.config import get_config
-from app.utils.cred import get_cred, save_cred
+from app.utils.cred import get_credentials
 
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
@@ -18,28 +17,26 @@ def upload_to_youtube(filepath, **kwargs):
     api_service_name = "youtube"
     api_version = "v3"
     config = get_config()
-    credentials = get_cred(config.youtube_email)
-    credentials = google.oauth2.credentials.Credentials(**credentials)
-    youtube = googleapiclient.discovery.build(
-        api_service_name, api_version, credentials=credentials
-    )
-    snippet = kwargs.copy()
-    if "title" not in snippet:
-        snippet["title"] = "New Video"
+    with get_credentials(config.youtube_email) as credentials:
+        youtube = googleapiclient.discovery.build(
+            api_service_name, api_version, credentials=credentials
+        )
+        snippet = kwargs.copy()
+        if "title" not in snippet:
+            snippet["title"] = "New Video"
 
-    snippet.update(
-        tags=["islamic"],
-        categoryId="22",
-    )
-    body = dict(
-        snippet=snippet,
-        status=dict(privacyStatus="public", selfDeclaredMadeForKids=True),
-    )
-    request = youtube.videos().insert(
-        part=",".join(body.keys()), body=body, media_body=MediaFileUpload(filepath)
-    )
-    response = request.execute()
-    save_cred(config.youtube_email, credentials)
+        snippet.update(
+            tags=["islamic"],
+            categoryId="22",
+        )
+        body = dict(
+            snippet=snippet,
+            status=dict(privacyStatus="public", selfDeclaredMadeForKids=True),
+        )
+        request = youtube.videos().insert(
+            part=",".join(body.keys()), body=body, media_body=MediaFileUpload(filepath)
+        )
+        response = request.execute()
     return response
 
     # response = None
