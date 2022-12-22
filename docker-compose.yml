@@ -22,6 +22,24 @@ services:
     volumes:
       - media-data:/data:ro
   
+  beat:
+    image: zkhan93/tb-yt-uploader
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: scripts/start-celery-beat.sh
+    volumes:
+      - ./app:/code/app
+
+  worker:
+    image: zkhan93/tb-yt-uploader
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: scripts/start-celery-worker.sh
+    volumes:
+      - ./app:/code/app
+
   redis:
     image: redis
     volumes:
