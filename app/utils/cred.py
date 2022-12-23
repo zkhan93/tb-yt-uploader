@@ -52,7 +52,6 @@ def get_cred(email) -> dict:
 def save_cred(email, cred):
     r = get_redis()
     cred_dict = credentials_to_dict(cred)
-    print("saving", cred_dict)
     encrypted_cred = encrypt(json.dumps(cred_dict))
     r.set(email, encrypted_cred)
 
@@ -60,7 +59,6 @@ def save_cred(email, cred):
 @contextmanager
 def get_credentials(email):
     credential_dic = get_cred(email)
-    print("got", credential_dic)
     credentials = google.oauth2.credentials.Credentials(**credential_dic)
     try:
         yield credentials
