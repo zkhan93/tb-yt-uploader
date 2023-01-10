@@ -16,7 +16,7 @@ A Telegram bot that can convert a given audio message to a video using FFmpeg an
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - Telegram Bot Token
 - Google client secret json file
-- A redirect URI, this can be `http://localhost:8000/oauth2-callback` if you are running the application on your local machine
+- A redirect URI, this can be `http://localhost:8000/oauth-callback` if you are running the application on your local machine
 
 ### Installation
 - Clone the repository and navigate into the project directory
@@ -25,15 +25,12 @@ A Telegram bot that can convert a given audio message to a video using FFmpeg an
 - Wait for the containers to start up and the application to initialize, this may take a few minutes
 
 ### Usage
-- Access the web interface by going to `http://localhost:8000/oauth2`
+- Access the web interface by going to `http://localhost:8000/authorize`
 - Sign in with your google account
 - You will be prompted to give the bot access to manage your YouTube videos
 - After signing in you can use the bot by sending an audio recording to bot and then reply on that message with "/covert <title of the video>"
 - Bot will create and upload the video  to youtube and reply you with the status
 - To stop the application, press `CTRL+C` in the terminal or run `docker-compose down`
-
-## Monitoring
-- Celery flower dashboard is available at `http://localhost:5555`
 
 ## Contributing
 
