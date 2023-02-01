@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 def create_app(config: Settings) -> FastAPI:
     from .auth import auth as auth_app
     from .core import core as core_app
+
     app = FastAPI()
     app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
     app.add_middleware(
@@ -28,7 +29,7 @@ def create_app(config: Settings) -> FastAPI:
     )
     app.include_router(
         core_app,
-        dependencies = [Depends(check_api_key)],
+        dependencies=[Depends(check_api_key)],
         tags=["Core"],
         prefix="",
     )

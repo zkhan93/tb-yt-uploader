@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class Settings(BaseSettings):
     media_base: str
     token: str
@@ -22,14 +23,14 @@ class Settings(BaseSettings):
     redis_key_namespace: str = "key"
 
     class Config:
-        
         @classmethod
         def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
             if field_name == "allowed_users":
-                return [tuple(x.strip().split(':')) for x in raw_val.split(",")]
+                return [tuple(x.strip().split(":")) for x in raw_val.split(",")]
             if field_name == "client_secret_json":
                 return json.loads(base64.b64decode(raw_val))
             return cls.json_loads(raw_val)
+
 
 @lru_cache
 def get_config():

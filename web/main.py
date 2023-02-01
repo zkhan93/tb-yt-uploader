@@ -24,15 +24,13 @@ app = create_app(setting)
 logger.debug("app created")
 
 
-
 celery = Celery(__name__)
 celery.conf.broker_url = setting.celery_broker_url
 celery.conf.result_backend = setting.celery_result_backend
 
 celery.conf.beat_schedule = {
-    'refresh-token-every-30-min': {
-        'task': 'app.tasks.task_check_auth',
-        'schedule': crontab(minute='*'),
+    "refresh-token-every-30-min": {
+        "task": "app.tasks.task_check_auth",
+        "schedule": crontab(minute="0"),
     },
 }
-

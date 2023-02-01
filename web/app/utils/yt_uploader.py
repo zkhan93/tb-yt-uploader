@@ -38,8 +38,8 @@ def upload_to_youtube(video_file, email, **kwargs):
             media_body=MediaFileUpload(video_file),
         )
         response = request.execute()
-    
-    if response.get('status', {}).get('uploadStatus', "failed") == "uploaded":
+
+    if response.get("status", {}).get("uploadStatus", "failed") == "uploaded":
         Path(video_file).unlink()
     return response
 

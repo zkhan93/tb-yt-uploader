@@ -25,7 +25,6 @@ def task_convert_to_audio(audio_file: str, image_file: str):
 
 
 @shared_task()
-def task_upload_to_youtube(filepath: str, email:str, **kwargs):
+def task_upload_to_youtube(filepath: str, email: str, **kwargs):
     response = upload_to_youtube(filepath, email, **kwargs)
     return response
-

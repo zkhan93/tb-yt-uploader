@@ -42,7 +42,8 @@ def get_redis():
     config = get_config()
     return redis.Redis(host=config.redis_host, port=6379, db=0)
 
-def _get_key(email:str):
+
+def _get_key(email: str):
     config = get_config()
     return f"{config.redis_key_namespace}:{email}"
 
@@ -80,6 +81,7 @@ def check_auth(email: str):
         user_info = service.userinfo().get().execute()
         return user_info
 
+
 def check_auth_all():
     r = get_redis()
     info = {}
@@ -90,6 +92,7 @@ def check_auth_all():
         except Exception as ex:
             info[email] = {"error": str(ex)}
     return info
+
 
 def credentials_to_dict(credentials):
     return {

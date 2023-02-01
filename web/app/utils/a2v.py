@@ -27,7 +27,9 @@ def create_video_file(audio_file: str, image_file: str):
         )
         audio = ffmpeg.input(audio_file)
         out = None
-        with tempfile.NamedTemporaryFile(delete=False, dir=config.media_base, suffix=".mp4") as video:
+        with tempfile.NamedTemporaryFile(
+            delete=False, dir=config.media_base, suffix=".mp4"
+        ) as video:
             print(">>>>>>>>>>>>", video.name)
             (
                 ffmpeg.output(
@@ -41,7 +43,7 @@ def create_video_file(audio_file: str, image_file: str):
         ffmpeg_exception = ex.stderr.decode()
     else:
         Path(audio_file).unlink()
-        
+
     if ffmpeg_exception:
         raise Exception(ffmpeg_exception)
     return out
