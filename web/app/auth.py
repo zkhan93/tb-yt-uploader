@@ -1,9 +1,9 @@
 import logging
 import os
 
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import RedirectResponse
-from starlette.middleware.sessions import SessionMiddleware
+from app.config import Settings, get_config
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
@@ -13,13 +13,10 @@ from app.utils.cred import get_credentials, SCOPES, save_cred
 logger = logging.getLogger(__name__)
 
 
-config = get_config()
-app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
+auth = APIRouter()
 
-
-@app.get("/test")
-async def test(request: Request):
+@auth.get("/test")
+async def test(request: Request, config: Settings = Depends(get_config)):
     try:
         with get_credentials(config.youtube_email) as credentials:
             # Load credentials from the session.
@@ -34,9 +31,8 @@ async def test(request: Request):
         return user_info
 
 
-@app.get("/authorize")
-async def authorize(request: Request):
-    config = get_config()
+@auth.get("/authorize")
+async def authorize(request: Request, config: Settings = Depends(get_config)):
     flow = google_auth_oauthlib.flow.Flow.from_client_config(
         config.client_secret_json, scopes=SCOPES
     )
@@ -48,10 +44,9 @@ async def authorize(request: Request):
     return RedirectResponse(authorization_url)
 
 
-@app.get("/oauth-callback")
-async def oauth_callback(request: Request):
+@auth.get("/oauth-callback")
+async def oauth_callback(request: Request, config: Settings = Depends(get_config)):
     state = request.session["state"]
-    config = get_config()
     flow = google_auth_oauthlib.flow.Flow.from_client_config(
         config.client_secret_json, scopes=SCOPES, state=state
     )

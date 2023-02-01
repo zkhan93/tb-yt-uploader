@@ -4,9 +4,9 @@ import logging
 from telegram.ext import CommandHandler, Filters
 from telegram import ParseMode
 
-from app.config import get_config
-from app.utils.a2v import create_video_file, download_audio, delete_file
-from app.utils.yt_uploader import upload_to_youtube
+from config import get_config
+from utils.a2v import create_video_file, download_audio, delete_file
+from utils.yt_uploader import upload_to_youtube
 
 logger = logging.getLogger(__name__)
 

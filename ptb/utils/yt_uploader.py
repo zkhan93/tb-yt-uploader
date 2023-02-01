@@ -2,8 +2,8 @@ import googleapiclient.discovery
 import googleapiclient.errors
 
 from googleapiclient.http import MediaFileUpload
-from app.config import get_config
-from app.utils.cred import get_credentials
+from config import get_config
+from utils.cred import get_credentials
 
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",

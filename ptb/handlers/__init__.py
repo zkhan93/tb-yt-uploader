@@ -1,5 +1,5 @@
-from app.handlers.commands import get_clean_handler, get_start_handler
-from app.handlers.convert import get_convert_handler
+from .commands import get_clean_handler, get_start_handler
+from .convert import get_convert_handler
 
 
 message_handlers = [
