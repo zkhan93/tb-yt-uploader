@@ -1,11 +1,13 @@
-from app.config import get_config
 import base64
-from cryptography.fernet import Fernet
-import redis
 import json
 from functools import lru_cache
-import google.oauth2.credentials
 from contextlib import contextmanager
+from cryptography.fernet import Fernet
+import google.oauth2.credentials
+import googleapiclient.discovery
+import redis
+
+from app.config import get_config
 
 
 SCOPES = [
@@ -40,10 +42,14 @@ def get_redis():
     config = get_config()
     return redis.Redis(host=config.redis_host, port=6379, db=0)
 
+def _get_key(email:str):
+    config = get_config()
+    return f"{config.redis_key_namespace}:{email}"
+
 
 def get_cred(email) -> dict:
     r = get_redis()
-    encrypted_cred = r.get(email)
+    encrypted_cred = r.get(_get_key(email))
     if not encrypted_cred:
         raise Exception(f"Credential not found for {email}")
     return json.loads(decrypt(encrypted_cred))
@@ -53,7 +59,7 @@ def save_cred(email, cred):
     r = get_redis()
     cred_dict = credentials_to_dict(cred)
     encrypted_cred = encrypt(json.dumps(cred_dict))
-    r.set(email, encrypted_cred)
+    r.set(_get_key(email), encrypted_cred)
 
 
 @contextmanager
@@ -65,6 +71,25 @@ def get_credentials(email):
     finally:
         save_cred(email, credentials)
 
+
+def check_auth(email: str):
+    with get_credentials(email) as credentials:
+        service = googleapiclient.discovery.build(
+            "oauth2", "v2", credentials=credentials
+        )
+        user_info = service.userinfo().get().execute()
+        return user_info
+
+def check_auth_all():
+    r = get_redis()
+    info = {}
+    for key in r.scan_iter(_get_key("*")):
+        _, email = key.decode().split(":")
+        try:
+            info[email] = check_auth(email)
+        except Exception as ex:
+            info[email] = {"error": str(ex)}
+    return info
 
 def credentials_to_dict(credentials):
     return {

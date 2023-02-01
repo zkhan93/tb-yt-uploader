@@ -1,9 +1,9 @@
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.auth import check_api_key
 from app.config import Settings
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,8 @@ def create_app(config: Settings) -> FastAPI:
     )
     app.include_router(
         core_app,
-        tags=["Authentication"],
+        dependencies = [Depends(check_api_key)],
+        tags=["Core"],
         prefix="",
     )
 

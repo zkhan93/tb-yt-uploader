@@ -15,9 +15,11 @@ class Settings(BaseSettings):
     oauth_redirect_uri: str
     secret_key: str
     redis_host: str
-    youtube_email: str
     celery_broker_url: str
     celery_result_backend: str
+    api_key: str
+    default_a2v_image: str
+    redis_key_namespace: str = "key"
 
     class Config:
         

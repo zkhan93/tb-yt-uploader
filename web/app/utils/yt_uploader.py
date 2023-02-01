@@ -1,8 +1,8 @@
 import googleapiclient.discovery
 import googleapiclient.errors
+from pathlib import Path
 
 from googleapiclient.http import MediaFileUpload
-from app.config import get_config
 from app.utils.cred import get_credentials
 
 SCOPES = [
@@ -13,11 +13,10 @@ SCOPES = [
 ]
 
 
-def upload_to_youtube(filepath, **kwargs):
+def upload_to_youtube(video_file, email, **kwargs):
     api_service_name = "youtube"
     api_version = "v3"
-    config = get_config()
-    with get_credentials(config.youtube_email) as credentials:
+    with get_credentials(email) as credentials:
         youtube = googleapiclient.discovery.build(
             api_service_name, api_version, credentials=credentials
         )
@@ -34,9 +33,14 @@ def upload_to_youtube(filepath, **kwargs):
             status=dict(privacyStatus="public", selfDeclaredMadeForKids=False),
         )
         request = youtube.videos().insert(
-            part=",".join(body.keys()), body=body, media_body=MediaFileUpload(filepath)
+            part=",".join(body.keys()),
+            body=body,
+            media_body=MediaFileUpload(video_file),
         )
         response = request.execute()
+    
+    if response.get('status', {}).get('uploadStatus', "failed") == "uploaded":
+        Path(video_file).unlink()
     return response
 
     # response = None
