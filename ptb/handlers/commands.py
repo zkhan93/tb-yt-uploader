@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def start(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="I'm Kiyamu, I'm here to help you! see available commands",
+        text="I help few chosen people in converting audio to video and then uploading it to youtube or just uploading videos to youtube",
     )
 
 

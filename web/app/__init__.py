@@ -13,7 +13,7 @@ def create_app(config: Settings) -> FastAPI:
     from .auth import auth as auth_app
     from .core import core as core_app
 
-    app = FastAPI()
+    app = FastAPI(title="Youtube Helper",description="a description")
     app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
     app.add_middleware(
         CORSMiddleware,

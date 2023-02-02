@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     redis_host: str
     celery_broker_url: str
     celery_result_backend: str
-    api_key: str
+    access_token: str
     default_a2v_image: str
     redis_key_namespace: str = "key"
 

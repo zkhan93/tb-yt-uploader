@@ -3,39 +3,39 @@ version: "3"
 services:
 
   ptb:
-    image: zkhan93/tb-yt-uploader
+    image: ghcr.io/zkhan93/yuh-tb:release
     env_file:
       - .env
     restart: unless-stopped
     command: scripts/start-bot.sh
     volumes:
-      - media-data:/data
+      - media:/media
   
   web:
-    image: zkhan93/tb-yt-uploader
+    image: ghcr.io/zkhan93/yuh-web:release
     env_file:
       - .env
     restart: unless-stopped
     command: scripts/start-web.sh
     ports:
-      - 8080:80
+      - 8484:80
     volumes:
-      - media-data:/data:ro
+      - media:/media
 
   worker:
-    image: zkhan93/tb-yt-uploader
+    image: ghcr.io/zkhan93/yuh-web:release
     env_file:
       - .env
     restart: unless-stopped
     command: scripts/start-celery.sh
     volumes:
-      - ./app:/code/app
+      - media:/media
 
   redis:
     image: redis
     volumes:
-        - redis_data:/data
+        - redis:/data
 
 volumes:
-  redis_data:
-  media-data:
+  redis:
+  media:

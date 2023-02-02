@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     media_base: str
     token: str
     allowed_users: list[tuple]
+    access_token: str
     
     class Config:
         

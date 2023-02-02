@@ -30,7 +30,7 @@ def env_setup(config: Settings):
 
 def run():
     config: Settings = get_config()
-    env_setup(config)
+    # env_setup(config)
     updater = Updater(token=config.token, use_context=True)
     dispatcher = updater.dispatcher
     register_handlers(config, dispatcher)

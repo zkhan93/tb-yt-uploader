@@ -4,22 +4,14 @@ version = "0.1.0"
 description = ""
 authors = ["Zeeshan Khan <zkhan1093@gmail.com>"]
 readme = "README.md"
-packages = [{include = "vid_helper"}]
+packages = [{include = "app"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
 python-telegram-bot = "^13.14"
-ffmpeg-python = "^0.2.0"
-google-api-python-client = "^2.70.0"
-google-auth-oauthlib = "^0.8.0"
-google-auth-httplib2 = "^0.1.0"
-celery = {extras = ["redis"], version = "^5.2.7"}
 pydantic = "^1.10.2"
-fastapi = "^0.88.0"
-uvicorn = "^0.20.0"
-itsdangerous = "^2.1.2"
-cryptography = "^38.0.4"
 python-dotenv = "^0.21.0"
+requests = "^2.28.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"

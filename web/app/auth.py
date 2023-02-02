@@ -25,7 +25,7 @@ api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
 def check_api_key(
     config: Settings = Depends(get_config), api_key: str = Security(api_key_header)
 ):
-    if not secrets.compare_digest(api_key.encode(), config.api_key.encode()):
+    if not secrets.compare_digest(api_key.encode(), config.access_token.encode()):
         raise HTTPException(
             status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"
         )

@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10-slim as prod
 
 RUN set -eux; \
 	apt-get update; \
@@ -17,6 +17,10 @@ RUN $POETRY_HOME/bin/pip install poetry
 
 WORKDIR /code
 COPY poetry.lock pyproject.toml /code/
-RUN poetry install  --no-root --no-interaction --no-ansi
+RUN poetry install  --no-root --no-interaction --no-ansi --without=dev
 COPY . /code/
 CMD ["/code/scripts/start-web.sh"]
+
+
+FROM prod as dev
+RUN poetry install --no-root --no-interaction --no-ansi
