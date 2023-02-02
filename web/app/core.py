@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 import shutil
 
-from fastapi import APIRouter, Depends, UploadFile, Form, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, Form, File, HTTPException, Body
 from fastapi.responses import RedirectResponse, JSONResponse
 from celery.result import AsyncResult
 from celery import chain
@@ -11,7 +11,7 @@ from celery import chain
 from app.config import Settings, get_config
 from app.utils.cred import check_auth_all
 from app.tasks import task_convert_to_audio, task_upload_to_youtube
-from app.models import Snippet, TaskSubmitted, TaskStatus
+from app.models import Snippet, TaskSubmitted, TaskStatus, LocalUploadData
 
 
 logger = logging.getLogger(__name__)
@@ -98,16 +98,15 @@ async def upload_to_youtube(
     return {"task_id": task.id}
 
 
-@core.post("/upload-local-to-youtube", response_model=TaskSubmitted)
-async def upload_local_to_youtube(
-    local_file: str,
-    email: str,
-    snippet: Snippet = Depends(),
-):
-    path = Path(local_file)
+@core.post(
+    "/upload-local-to-youtube",
+    response_model=TaskSubmitted,
+)
+async def upload_local_to_youtube(data: LocalUploadData = Body(...)):
+    path = data.local_file
     if not path.match("/external/*") or not path.is_file():
         raise HTTPException(status_code=400, detail="invalid local file")
     task = task_upload_to_youtube.apply_async(
-        args=[local_file, email], kwargs=snippet.dict()
+        args=[str(data.local_file), data.email], kwargs=data.snippet.dict()
     )
     return {"task_id": task.id}

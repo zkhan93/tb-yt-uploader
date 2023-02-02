@@ -1,5 +1,6 @@
 from pydantic import BaseModel as PydanticBase, Extra
 from typing import Optional, Any
+from pathlib import Path
 
 class BaseModel(PydanticBase):
     class Config:
@@ -35,3 +36,8 @@ class TaskStatus(BaseModel):
     id: str
     status: str
     result: Optional[Any] 
+
+class LocalUploadData(BaseModel):
+    local_file: Path
+    email: str
+    snippet: Snippet
