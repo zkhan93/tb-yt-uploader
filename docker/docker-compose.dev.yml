@@ -1,0 +1,50 @@
+version: "3"
+services:
+  
+  ptb:
+    build: 
+      context: ../ptb
+      target: dev
+    env_file:
+      - .env
+    restart: "no"
+    entrypoint: "/opt/poetry/bin/poetry"
+    command: ["run", "python", "-m", "jurigged", "-v", "./bot.py"]
+    volumes:
+      - ./data:/media
+      - ../ptb:/code/
+  
+  web:
+    build:
+      context: ../web
+      target: dev
+    env_file:
+      - .env
+    restart: "no"
+    entrypoint: "/opt/poetry/bin/poetry"
+    command: ["run", "uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "80" ]
+    volumes:
+      - ../web:/code/
+      - ./data:/media
+    ports:
+      - 8080:80
+
+  worker:
+    build:
+      context: ../web
+      target: dev
+    env_file:
+      - .env
+    restart: "no"
+    command: ["poetry", "run", "jurigged", "-v", "/usr/local/bin/celery", "-A", "main.celery", "worker", "--loglevel=INFO", "--beat"]
+    volumes:
+      - ../web:/code/
+      - ./data:/media
+
+  redis:
+    image: redis
+    volumes:
+        - redis:/data
+
+volumes:
+  redis:

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "vid-helper"
+version = "0.1.0"
+description = ""
+authors = ["Zeeshan Khan <zkhan1093@gmail.com>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-telegram-bot = "^13.14"
+pydantic = "^1.10.2"
+python-dotenv = "^0.21.0"
+requests = "^2.28.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
+jurigged = "^0.5.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

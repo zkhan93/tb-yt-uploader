@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+
+  ptb:
+    image: ghcr.io/zkhan93/yuh-tb:release
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: scripts/start-bot.sh
+    volumes:
+      - media:/media
+  
+  web:
+    image: ghcr.io/zkhan93/yuh-web:release
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: scripts/start-web.sh
+    ports:
+      - 8484:80
+    volumes:
+      - media:/media
+
+  worker:
+    image: ghcr.io/zkhan93/yuh-web:release
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: scripts/start-celery.sh
+    volumes:
+      - media:/media
+
+  redis:
+    image: redis
+    volumes:
+        - redis:/data
+
+volumes:
+  redis:
+  media:
