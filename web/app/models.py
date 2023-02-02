@@ -1,5 +1,5 @@
 from pydantic import BaseModel as PydanticBase, Extra
-from typing import Optional
+from typing import Optional, Any
 
 class BaseModel(PydanticBase):
     class Config:
@@ -34,4 +34,4 @@ class TaskResult(BaseModel):
 class TaskStatus(BaseModel):
     id: str
     status: str
-    result: Optional[TaskResult | str] 
+    result: Optional[Any] 

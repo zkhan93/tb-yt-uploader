@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
     command: scripts/start-web.sh
     ports:
-      - 8484:80
+      - 8067:80
     volumes:
       - media:/media
 
