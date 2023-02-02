@@ -13,7 +13,7 @@ SCOPES = [
 ]
 
 
-def upload_to_youtube(video_file, email, **kwargs):
+def upload_to_youtube(video_file, email, delete=False, **kwargs):
     api_service_name = "youtube"
     api_version = "v3"
     with get_credentials(email) as credentials:
@@ -39,7 +39,7 @@ def upload_to_youtube(video_file, email, **kwargs):
         )
         response = request.execute()
 
-    if response.get("status", {}).get("uploadStatus", "failed") == "uploaded":
+    if response.get("status", {}).get("uploadStatus", "failed") == "uploaded" and delete:
         Path(video_file).unlink()
     return response
 

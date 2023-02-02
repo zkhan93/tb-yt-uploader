@@ -92,8 +92,10 @@ async def upload_to_youtube(
     config: Settings = Depends(get_config),
 ):
     src_video = str(save_upload_file_tmp(video, config))
+    kwargs = snippet.dict()
+    kwargs["delete"] = True
     task = task_upload_to_youtube.apply_async(
-        args=[src_video, email], kwargs=snippet.dict()
+        args=[src_video, email], kwargs=kwargs
     )
     return {"task_id": task.id}
 
@@ -102,11 +104,16 @@ async def upload_to_youtube(
     "/upload-local-to-youtube",
     response_model=TaskSubmitted,
 )
-async def upload_local_to_youtube(data: LocalUploadData = Body(...), config: Settings = Depends(get_config),):
+async def upload_local_to_youtube(
+    data: LocalUploadData = Body(...),
+    config: Settings = Depends(get_config),
+):
     path = data.local_file
     if not path.match(config.external_pattern) or not path.is_file():
         raise HTTPException(status_code=400, detail="invalid local file")
+    kwargs = data.snippet.dict()
+    kwargs["delete"] = False
     task = task_upload_to_youtube.apply_async(
-        args=[str(data.local_file), data.email], kwargs=data.snippet.dict()
+        args=[str(data.local_file), data.email], kwargs=kwargs
     )
     return {"task_id": task.id}
