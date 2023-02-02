@@ -104,7 +104,7 @@ async def upload_to_youtube(
 )
 async def upload_local_to_youtube(data: LocalUploadData = Body(...)):
     path = data.local_file
-    if not path.match("/external/*") or not path.is_file():
+    if not path.match("/external/**/*") or not path.is_file():
         raise HTTPException(status_code=400, detail="invalid local file")
     task = task_upload_to_youtube.apply_async(
         args=[str(data.local_file), data.email], kwargs=data.snippet.dict()
