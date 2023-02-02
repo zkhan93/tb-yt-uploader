@@ -26,6 +26,7 @@ services:
     volumes:
       - ../web:/code/
       - ./data:/media
+      - ./extra:/external:ro
     ports:
       - 8080:80
 
@@ -40,6 +41,7 @@ services:
     volumes:
       - ../web:/code/
       - ./data:/media
+      - ./extra:/external:ro
 
   redis:
     image: redis
