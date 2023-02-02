@@ -31,6 +31,6 @@ celery.conf.result_backend = setting.celery_result_backend
 celery.conf.beat_schedule = {
     "refresh-token-every-30-min": {
         "task": "app.tasks.task_check_auth",
-        "schedule": crontab(minute="0"),
+        "schedule": crontab(minute="*/30"),
     },
 }
