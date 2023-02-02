@@ -21,6 +21,7 @@ services:
       - 8067:80
     volumes:
       - media:/media
+      - ${EXTERNAL}:/external:ro
 
   worker:
     image: ghcr.io/zkhan93/yuh-web:release
@@ -30,6 +31,7 @@ services:
     command: scripts/start-celery.sh
     volumes:
       - media:/media
+      - ${EXTERNAL}:/external:ro
 
   redis:
     image: redis

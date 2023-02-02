@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 import shutil
 
-from fastapi import APIRouter, Depends, UploadFile, Form, File
+from fastapi import APIRouter, Depends, UploadFile, Form, File, HTTPException
 from fastapi.responses import RedirectResponse, JSONResponse
 from celery.result import AsyncResult
 from celery import chain
@@ -94,5 +94,19 @@ async def upload_to_youtube(
     src_video = str(save_upload_file_tmp(video, config))
     task = task_upload_to_youtube.apply_async(
         args=[src_video, email], kwargs=snippet.dict()
+    )
+    return {"task_id": task.id}
+
+
+@core.post("/upload-local-to-youtube", response_model=TaskSubmitted)
+async def upload_local_to_youtube(
+    local_file: str,
+    email: str,
+    snippet: Snippet = Depends(),
+):
+    if not local_file.startswith("/external") or not Path(local_file).is_file():
+        raise HTTPException(status_code=400, detail="invalid local file")
+    task = task_upload_to_youtube.apply_async(
+        args=[local_file, email], kwargs=snippet.dict()
     )
     return {"task_id": task.id}
