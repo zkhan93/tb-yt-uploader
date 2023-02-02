@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     celery_result_backend: str
     access_token: str
     default_a2v_image: str
+    external_pattern: str
     redis_key_namespace: str = "key"
 
     class Config:

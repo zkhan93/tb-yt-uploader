@@ -102,9 +102,9 @@ async def upload_to_youtube(
     "/upload-local-to-youtube",
     response_model=TaskSubmitted,
 )
-async def upload_local_to_youtube(data: LocalUploadData = Body(...)):
+async def upload_local_to_youtube(data: LocalUploadData = Body(...), config: Settings = Depends(get_config),):
     path = data.local_file
-    if not path.match("/external/**/*") or not path.is_file():
+    if not path.match(config.external_pattern) or not path.is_file():
         raise HTTPException(status_code=400, detail="invalid local file")
     task = task_upload_to_youtube.apply_async(
         args=[str(data.local_file), data.email], kwargs=data.snippet.dict()
