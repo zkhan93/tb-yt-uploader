@@ -8,8 +8,9 @@ services:
     env_file:
       - .env
     restart: "no"
-    entrypoint: "/opt/poetry/bin/poetry"
-    command: ["run", "python", "-m", "jurigged", "-v", "./bot.py"]
+    # entrypoint: "/opt/poetry/bin/poetry"
+    # command: ["run", "python", "-m", "jurigged", "-v", "./bot.py"]
+    command: ["sleep", "1000"]
     volumes:
       - ./data:/media
       - ../ptb:/code/
