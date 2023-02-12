@@ -21,8 +21,12 @@ class Settings(BaseSettings):
     access_token: str
     default_a2v_image: str
     external_pattern: str
+    email_from_address: str
+    email_to_address: str
+    email_password:str
     redis_key_namespace: str = "key"
-
+    debug: bool = False
+    
     class Config:
         @classmethod
         def parse_env_var(cls, field_name: str, raw_val: str) -> Any:

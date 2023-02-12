@@ -9,7 +9,7 @@ from celery.result import AsyncResult
 from celery import chain
 
 from app.config import Settings, get_config
-from app.utils.cred import check_auth_all
+from app.utils.cred import check_auth_all, remove_cred
 from app.tasks import task_convert_to_audio, task_upload_to_youtube
 from app.models import Snippet, TaskSubmitted, TaskStatus, LocalUploadData
 
@@ -29,6 +29,11 @@ async def test():
         return RedirectResponse("/authorize")
     else:
         return user_info
+
+
+@core.delete("/remove-credential")
+async def remove_credential(email: str = Form(...)) -> bool:
+    return remove_cred(email)
 
 
 @core.get("/task/{task_id}", response_model=TaskStatus)
@@ -94,9 +99,7 @@ async def upload_to_youtube(
     src_video = str(save_upload_file_tmp(video, config))
     kwargs = snippet.dict()
     kwargs["delete"] = True
-    task = task_upload_to_youtube.apply_async(
-        args=[src_video, email], kwargs=kwargs
-    )
+    task = task_upload_to_youtube.apply_async(args=[src_video, email], kwargs=kwargs)
     return {"task_id": task.id}
 
 

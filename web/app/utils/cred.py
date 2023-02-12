@@ -63,6 +63,12 @@ def save_cred(email, cred):
     r.set(_get_key(email), encrypted_cred)
 
 
+def remove_cred(email) -> bool:
+    r = get_redis()
+    removed_count = r.delete(_get_key(email))
+    return bool(removed_count)
+
+
 @contextmanager
 def get_credentials(email):
     credential_dic = get_cred(email)
