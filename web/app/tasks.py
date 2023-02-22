@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from celery import shared_task, Task
 
@@ -6,7 +7,7 @@ from app.utils.cred import check_auth_all
 from app.utils.a2v import create_video_file
 from app.utils.yt_uploader import upload_to_youtube
 from app.utils.gmail import send_email, format_last_exception
-
+from app.config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,11 @@ def task_convert_to_audio(audio_file: str, image_file: str):
 
 @shared_task(base=UploadRetryingTask)
 def task_upload_to_youtube(filepath: str, email: str, delete=False, **kwargs):
+    config = get_config()
+    path = Path(filepath)
+    if not path.match(config.external_pattern) or not path.is_file():
+        logger.error(f"file '{filepath}' not found")
+        return {"error": f"file '{filepath}' not found"}
     response = upload_to_youtube(filepath, email, delete=delete, **kwargs)
     logger.info(f"uploaded video to youtube {response}")
     return response
