@@ -10,12 +10,17 @@ from app.utils.gmail import send_email, format_last_exception
 
 logger = logging.getLogger(__name__)
 
+
 class BaseTask(Task):
+    autoretry_for = (Exception,)
+    max_retries = 10
+    retry_backoff = True
+
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         send_email(f"Task {self.name} failed", format_last_exception(einfo))
 
 
-@shared_task(base=BaseTask)
+@shared_task(base=BaseTask, autoretry_for=tuple())
 def task_check_auth():
     """check access for all users, by doing so it refreshes the auth token for the user.
     if check fails raise error"""
