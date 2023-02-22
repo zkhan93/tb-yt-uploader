@@ -12,15 +12,20 @@ logger = logging.getLogger(__name__)
 
 
 class BaseTask(Task):
-    autoretry_for = (Exception,)
-    max_retries = 10
-    retry_backoff = True
-
+    
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         send_email(f"Task {self.name} failed", format_last_exception(einfo))
 
+class RetryingTask(BaseTask):
+    autoretry_for = (Exception,)
+    
+class UploadRetryingTask(BaseTask):
+    autoretry_for = (Exception,)
+    max_retries = 24
+    default_retry_delay = 3600 # an hour 
 
-@shared_task(base=BaseTask, autoretry_for=tuple())
+
+@shared_task(base=BaseTask)
 def task_check_auth():
     """check access for all users, by doing so it refreshes the auth token for the user.
     if check fails raise error"""
@@ -30,14 +35,14 @@ def task_check_auth():
             send_email(f"token check failed {key}", f"<pre>{value}</pre>")
 
 
-@shared_task(base=BaseTask)
+@shared_task(base=RetryingTask)
 def task_convert_to_audio(audio_file: str, image_file: str):
     filepath = create_video_file(audio_file, image_file)
     logger.info(f"converted audio to video: {filepath}")
     return filepath
 
 
-@shared_task(base=BaseTask)
+@shared_task(base=UploadRetryingTask)
 def task_upload_to_youtube(filepath: str, email: str, delete=False, **kwargs):
     response = upload_to_youtube(filepath, email, delete=delete, **kwargs)
     logger.info(f"uploaded video to youtube {response}")
