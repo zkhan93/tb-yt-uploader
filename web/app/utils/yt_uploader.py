@@ -30,7 +30,7 @@ def upload_to_youtube(video_file, email, delete=False, **kwargs):
         )
         body = dict(
             snippet=snippet,
-            status=dict(privacyStatus="public", selfDeclaredMadeForKids=False),
+            status=dict(privacyStatus="private", selfDeclaredMadeForKids=False),
         )
         request = youtube.videos().insert(
             part=",".join(body.keys()),
