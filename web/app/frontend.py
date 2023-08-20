@@ -16,3 +16,7 @@ async def index():
 @frontend.get("/privacy")
 async def privacy():
     return HTMLResponse(open("./html/privacy_policy.html", "r").read())
+
+@frontend.get("/terms-of-service")
+async def terms():
+    return HTMLResponse(open("./html/tos.html", "r").read())
