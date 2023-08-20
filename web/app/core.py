@@ -10,7 +10,6 @@ from celery import chain
 
 from app.config import Settings, get_config
 from app.utils.cred import check_auth_all, remove_cred
-from app.utils.yt_uploader import rename_uploaded_videos
 from app.tasks import task_convert_to_audio, task_upload_to_youtube
 from app.models import Snippet, TaskSubmitted, TaskStatus, LocalUploadData
 
@@ -120,8 +119,3 @@ async def upload_local_to_youtube(
         args=[str(data.local_file), data.email], kwargs=kwargs
     )
     return {"task_id": task.id}
-
-
-@core.get("/rename-videos")
-def rename_videos(email: str):
-    return rename_uploaded_videos(email)
