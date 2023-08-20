@@ -15,7 +15,10 @@ logger = logging.getLogger(__name__)
 class BaseTask(Task):
     
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        send_email(f"Task {self.name} failed", format_last_exception(einfo))
+        body = format_last_exception(einfo)
+        if "Token has been expired" in body:
+            body += "<br><a href='https://tb-yt-uploader.khancave.in/authorize'>refresh token</a>"
+        send_email(f"Task {self.name} failed", body)
 
 class RetryingTask(BaseTask):
     autoretry_for = (Exception,)
