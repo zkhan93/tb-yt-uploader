@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI, Depends
+from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.auth import check_api_key
@@ -12,6 +13,7 @@ logger = logging.getLogger(__name__)
 def create_app(config: Settings) -> FastAPI:
     from .auth import auth as auth_app
     from .core import core as core_app
+    from .frontend import frontend as frontend_app
 
     app = FastAPI(title="Youtube Helper",description="a description")
     app.add_middleware(SessionMiddleware, secret_key=config.secret_key)
@@ -21,6 +23,12 @@ def create_app(config: Settings) -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+    
+    app.include_router(
+        frontend_app,
+        tags=["Frontend"],
+        prefix="",
     )
     app.include_router(
         auth_app,

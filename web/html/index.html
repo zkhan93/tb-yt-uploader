@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube Upload Helper</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, p {
+            margin: 0 0 20px 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            color: #555;
+        }
+
+        p {
+            color: #666;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        code {
+            background-color: #f8f8f8;
+            padding: 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Youtube Upload Helper API</h1>
+    <h2>About the API</h2>
+    <p>
+        The Youtube Upload Helper is a self-hosted application designed to provide a simple API for uploading videos to YouTube. 
+        Especially useful for systems where video files are automatically generated, this tool facilitates the automated process of uploading them to YouTube.
+    </p>
+
+    <h2>How to Use</h2>
+    <p>
+        1. Ensure the application is properly set up on your server or platform.<br>
+        2. Authenticate with your Google account, granting the necessary permissions.<br>
+        3. Make a POST request to the API endpoint with the following parameters:
+        <ul>
+            <li><code>video_file</code>: The video file you wish to upload.</li>
+            <li><code>title</code>: The title of the video.</li>
+            <li><code>description</code>: A description for the video.</li>
+            <li><code>tags</code>: Any tags associated with the video.</li>
+        </ul>
+        4. The API will return a response once the video is uploaded successfully.<br>
+        5. You can check all the available API endpoints <a href="/docs">here</a>.
+    </p>
+
+    <p>
+        For more details on privacy and data handling, please refer to our <a href="/privacy">Privacy Policy</a>.
+    </p>
+</div>
+
+</body>
+</html>
