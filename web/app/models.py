@@ -16,7 +16,7 @@ class Snippet(BaseModel):
     title: str = "New Video"
     description: str = "New Video Description"
     tags: list[str] = ["islamic"]
-    categoryId: list[str] = ["22"]
+    categoryId: str = "22"
 
 
 class VideoInfo(BaseModel):
