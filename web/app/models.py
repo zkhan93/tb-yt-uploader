@@ -14,6 +14,7 @@ class Status(BaseModel):
 
 class Snippet(BaseModel):
     title: str = "New Video"
+    description: str = "New Video Description"
     tags: list[str] = ["islamic"]
     categoryId: list[str] = ["22"]
 

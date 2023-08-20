@@ -1,7 +1,7 @@
 import googleapiclient.discovery
 import googleapiclient.errors
 from pathlib import Path
-
+from datetime import datetime
 from googleapiclient.http import MediaFileUpload
 from app.utils.cred import get_credentials
 
@@ -16,18 +16,23 @@ SCOPES = [
 def upload_to_youtube(video_file, email, delete=False, **kwargs):
     api_service_name = "youtube"
     api_version = "v3"
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    cameraLocation="Village Location",
     with get_credentials(email) as credentials:
         youtube = googleapiclient.discovery.build(
             api_service_name, api_version, credentials=credentials
         )
+            
         snippet = kwargs.copy()
         if "title" not in snippet:
-            snippet["title"] = "New Video"
-
-        snippet.update(
-            tags=["islamic"],
-            categoryId="22",
-        )
+            snippet["title"] = f"{cameraLocation} CCTV Feed - {current_time}"
+        if "description" not in snippet:
+            snippet["description"] = f"Live CCTV footage from {cameraLocation} captured on {current_time}. Watch and stay updated with real-time events in the village."
+        if "tags" not in snippet:
+            snippet["tags"] = ["village", "CCTV", "live feed", "security", "real-time", "monitoring"],
+        if "categoryId" not in snippet:
+            snippet["categoryId"] = "22"
+        
         body = dict(
             snippet=snippet,
             status=dict(privacyStatus="private", selfDeclaredMadeForKids=False),
