@@ -13,6 +13,7 @@ from app.config import get_config
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/youtube.force-ssl",
     "https://www.googleapis.com/auth/userinfo.profile",
     "openid",
 ]
