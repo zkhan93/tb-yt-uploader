@@ -16,7 +16,7 @@ class BaseTask(Task):
     
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         body = format_last_exception(einfo)
-        if "Token has been expired" in body:
+        if "token" in body.lower():
             body += "<br><a href='https://tb-yt-uploader.khancave.in/authorize'>refresh token</a>"
         send_email(f"Task {self.name} failed", body)
 
